@@ -5,10 +5,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @Tag(name = "테스트", description = "설명 ")
@@ -22,6 +19,17 @@ class SampleController(val vehicleService: VehicleService) {
     suspend fun vehicle(
         @PathVariable vin: String) =
         runCatching { vehicleService.retrieveVehicle(vin) }
+            .onFailure {
+                logger.error(it) { "failed to call from Database"}
+            }
+            .map { ResponseEntity.ok(it) }
+            .getOrElse { ResponseEntity.badRequest() }
+
+    @Operation(summary = "차량 정보 생성", description = "차량정보 생성")
+    @PutMapping("/vehicles/{vin}")
+    suspend fun put(
+        @PathVariable vin: String) =
+        runCatching { vehicleService.create(vin) }
             .onFailure {
                 logger.error(it) { "failed to call from Database"}
             }

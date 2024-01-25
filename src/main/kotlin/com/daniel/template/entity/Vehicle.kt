@@ -10,10 +10,10 @@ import jakarta.persistence.*
  */
 @Entity
 @Table(name = "VEHICLE")
-class Vehicle (
+class Vehicle(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val seq: Long = 0L,
-    @Column(name ="VIN", nullable = false, length = 50)
+    @Column(name = "VIN", nullable = false, length = 50)
     var vin: String = "",
 ) : BaseEntity()
